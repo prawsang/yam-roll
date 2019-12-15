@@ -1,7 +1,7 @@
 import React from 'react';
 import io from 'socket.io-client';
 
-const socket = io('http://192.168.1.36:5000'); 
+const socket = io('http://159.65.143.126:5000'); 
 
 const toDataURL = (file, callback) => {
   var reader = new FileReader();
