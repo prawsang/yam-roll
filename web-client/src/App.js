@@ -9,6 +9,7 @@ class App extends React.Component {
     if (socket !== null) {
       this.setState({ socket });
       this.subscribeToValues((err, value) => {
+        console.log(value);
         this.setState({ on: value });
       });
     }
