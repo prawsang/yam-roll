@@ -1,7 +1,8 @@
 import React from 'react';
 import io from 'socket.io-client';
+import { subscribeUser } from "./subscription";
 
-const socket = io('http://159.65.143.126:5000'); 
+const socket = io('http://192.168.1.36:5000'); 
 
 const toDataURL = (file, callback) => {
   var reader = new FileReader();
@@ -20,17 +21,22 @@ class App extends React.Component {
   state = { on: false, images: [], times: [] }
 
   componentDidMount() {
+    subscribeUser();
     if (socket !== null) {
       this.setState({ socket });
-      this.subscribeToValues((err, value) => {
-        this.setState({ on: value });
-      });
+      this.subscribeToValues();
     }
   }
-  subscribeToValues = (cb) => {
-    socket.on('ON_VALUE', value => cb(null, value));
+  subscribeToValues = () => {
+    socket.on('ON_VALUE', value => {
+      this.setState({ on: value });
+    });
     socket.on('IMAGES', (images , times) => {
       this.setState({ images, times });
+    })
+    socket.on('PICTURE_TAKEN', e => {
+      console.log("hello");
+      subscribeUser("Movement detected.", "Click here to see photos of the intruder.");
     })
   }
 
