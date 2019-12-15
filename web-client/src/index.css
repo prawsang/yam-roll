@@ -2,6 +2,7 @@
 body {
     font-family: 'Roboto', sans-serif;
     margin: 0;
+    margin-top: 60px;
 }
 main.container {
     display: flex;
@@ -9,9 +10,9 @@ main.container {
     justify-content: center;
     margin: 0;
     margin: auto;
-    max-width: 500px;
+    max-width: 1400px;
     text-align: center;
-    min-height: 100vh;
+    min-height: calc(100vh - 60px);
     padding: 0;
     width: 90%;
 }
@@ -44,4 +45,39 @@ main.container {
     top: 2px;
     left: initial;
     right: 2px;
+}
+
+.image-grid {
+    justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+}
+.grid-image-wrapper {
+    margin: 15px;
+}
+.grid-image {
+    height: 240px;
+    width: 360px;
+    margin-bottom:10px;
+}
+h5 {
+    margin-top:0;
+}
+
+button {
+    margin-bottom: 1.5em;
+    border-radius: 100px;
+    border-style: none;
+    padding: 10px 25px;
+    font-weight: 600;
+    font-size: 12pt;
+    background-color: #4d71d4;
+    box-shadow: 0px 3px 5px rgba(77, 113, 212, 0.3);
+    color: white;
+}
+button.danger {
+    background-color: #d82a2a;
+    box-shadow: 0px 3px 5px rgba(216, 42, 42, 0.3);
+    color: white;
 }
