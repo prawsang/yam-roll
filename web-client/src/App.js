@@ -73,8 +73,8 @@ class App extends React.Component {
               <div className="image-grid">
                 { this.state.images.map((e,i) => {
                   return (
-                    <div className="grid-image-wrapper">
-                      <img src={e} key={i} className="grid-image" alt=""/>
+                    <div className="grid-image-wrapper" key={i}>
+                      <img src={e} className="grid-image" alt=""/>
                       <h5>{this.state.times[i]}</h5>
                     </div>
                   )
