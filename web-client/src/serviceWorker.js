@@ -26,7 +26,7 @@ export function register(config) {
     // The URL constructor is available in all browsers that support SW.
     // const publicUrl = new URL(process.env.PUBLIC_URL, window.location.href);
     const publicUrl = new URL(process.env.NODE_ENV === 'production' ? 
-    process.env.REACT_APP_URL : 'http://localhost:3000/', window.location.href);
+    process.env.REACT_APP_URL : process.env.REACT_APP_LOCALHOST_URL, window.location.href);
     if (publicUrl.origin !== window.location.origin) {
       // Our service worker won't work if PUBLIC_URL is on a different origin
       // from what our page is served on. This might happen if a CDN is used to
@@ -39,7 +39,7 @@ export function register(config) {
         ? 'service-worker.js' 
         : 'notification-sw.js'
       // const swUrl = `${process.env.PUBLIC_URL}/${swFileName}`;
-      const swUrl = `${process.env.NODE_ENV === 'production' ? `${process.env.REACT_APP_URL}/` : "http://localhost:3000/"}${swFileName}`;
+      const swUrl = `${process.env.NODE_ENV === 'production' ? process.env.REACT_APP_URL : process.env.REACT_APP_LOCALHOST_URL}/${swFileName}`;
 
       if (isLocalhost) {
         // This is running on localhost. Let's check if a service worker still exists or not.

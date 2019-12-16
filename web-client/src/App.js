@@ -3,7 +3,7 @@ import io from 'socket.io-client';
 import { subscribeUser } from "./subscription";
 
 const socket = io(process.env.NODE_ENV === 'production' ? 
-process.env.REACT_APP_API_URL : 'http://localhost:5000/'); 
+process.env.REACT_APP_API_URL : process.env.REACT_APP_LOCALHOST_API_URL); 
 
 const toDataURL = (file, callback) => {
   var reader = new FileReader();

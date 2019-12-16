@@ -15,7 +15,7 @@ function urlBase64ToUint8Array(base64String) {
 }
 
 export function sendSubscription(subscription, title, body) {
-  return fetch(`${process.env.REACT_APP_API_URL}/notifications/subscribe`, {
+  return fetch(`${process.env.NODE_ENV === 'production' ? process.env.REACT_APP_API_URL : process.env.REACT_APP_LOCALHOST_API_URL}/notifications/subscribe`, {
     method: 'POST',
     body: JSON.stringify({
       subscription,
