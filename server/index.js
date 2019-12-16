@@ -1,9 +1,18 @@
 const express = require("express");
 const socket = require("socket.io");
-// const path = require('path');
 const app = express();
-// const fs = require('fs');
-// const multer = require("multer");
+const dotenv = require('dotenv')
+const bodyParser = require('body-parser')
+const cors = require('cors')
+const webpush = require('web-push')
+
+dotenv.config()
+
+app.use(cors())
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json())
+
+webpush.setVapidDetails(process.env.WEB_PUSH_CONTACT, process.env.PUBLIC_VAPID_KEY, process.env.PRIVATE_VAPID_KEY)
 
 server = app.listen(5000, () => console.log("server is running on port 5000"));
 
@@ -42,6 +51,7 @@ io.on("connection", socket => {
       times = times.shift();
       times.unshift(getTimestamp());
     }
+    io.emit("PICTURE_TAKEN", "");
     io.emit("IMAGES", images, times);
   })
 
@@ -49,5 +59,21 @@ io.on("connection", socket => {
     images = [];
     io.emit("IMAGES", []);
   })
+});
+
+// Notifications
+app.post('/notifications/subscribe', (req, res) => {
+  const data = req.body;
+
+  const payload = JSON.stringify({
+    title: data.title,
+    body: data.body
+  });
+
+  webpush.sendNotification(data.subscription, payload)
+    .then(result => console.log(result))
+    .catch(e => console.log(e.stack))
+
+  res.status(200).json({'success': true})
 });
 
