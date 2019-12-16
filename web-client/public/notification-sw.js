@@ -9,7 +9,8 @@ self.addEventListener('push', event => {
     );
 });
 self.addEventListener('notificationclick', event => {
-    const url = 'http://192.168.1.36:3000';
+    const url = process.env.NODE_ENV === 'production' ? 
+    process.env.REACT_APP_URL : 'http://localhost:3000/';
     if (clients.openWindow) {
         return clients.openWindow(url);
     }

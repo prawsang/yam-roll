@@ -2,7 +2,8 @@ import React from 'react';
 import io from 'socket.io-client';
 import { subscribeUser } from "./subscription";
 
-const socket = io('http://192.168.1.36:5000'); 
+const socket = io(process.env.NODE_ENV === 'production' ? 
+process.env.REACT_APP_API_URL : 'http://localhost:5000/'); 
 
 const toDataURL = (file, callback) => {
   var reader = new FileReader();
