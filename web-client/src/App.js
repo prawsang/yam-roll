@@ -64,12 +64,12 @@ class App extends React.Component {
       <main className="container">
           <div style={{textAlign: 'center'}}>
               <h1>Yam Roll Controller</h1>
-              <input 
+              {/* <input 
                 type="file" 
                 id="email-input" 
                 ref={this.fileInput} 
                 onChange={(e) => this.handleFileSelect(e)} 
-              />
+              /> */}
               <div style={{display: "flex", alignItems: "center", justifyContent: "center", marginBottom: '1em'}}>
                   <h5 style={{margin: 0, marginRight: '1em'}}>Power</h5>
                   <div className={`switch ${this.state.on ? "on" : "off"}`} onClick={() => this.handleClick()}>
