@@ -16,13 +16,13 @@ app.use(bodyParser.json())
 
 webpush.setVapidDetails(process.env.WEB_PUSH_CONTACT, process.env.PUBLIC_VAPID_KEY, process.env.PRIVATE_VAPID_KEY)
 
-// server = app.listen(5000, () => console.log("server is running on port 5000"));
-server = https.createServer({
-  key: fs.readFileSync('server.key'),
-  cert: fs.readFileSync('server.cert')
-}, app).listen(5000, () => {
-  console.log("server is running on port 5000")
-})
+server = app.listen(5000, () => console.log("server is running on port 5000"));
+// server = https.createServer({
+//   key: fs.readFileSync('server.key'),
+//   cert: fs.readFileSync('server.cert')
+// }, app).listen(5000, () => {
+//   console.log("server is running on port 5000")
+// })
 
 const getTimestamp = () => {
   let today = new Date();
