@@ -58,8 +58,8 @@ class App extends React.Component {
       socket.emit("TAKE_PICTURE", data)
     })
 	}
-
   render() {
+    //console.log(this.state.images);
     return (
       <main className="container">
           <div style={{textAlign: 'center'}}>
@@ -78,7 +78,7 @@ class App extends React.Component {
               </div>
               <button onClick={() => this.clearImages()} className="danger">Clear Images</button>
               <div className="image-grid">
-                { this.state.images.map((e,i) => {
+                { Array.isArray(this.state.images) && this.state.images.map((e,i) => {
                   return (
                     <div className="grid-image-wrapper" key={i}>
                       <img src={e} className="grid-image" alt=""/>
