@@ -6,9 +6,15 @@ const dotenv = require('dotenv')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const webpush = require('web-push')
-const fs = require('fs')
-const cam = require('raspicam');
-var c = new cam({ mode: "photo", output: "photo.jpg", w: 1920, h: 1080 });
+//const fs = require('fs')
+//const cam = require('raspicam');
+//var c = new cam({ mode: "photo", output: "photo.jpg", w: 1920, h: 1080 });
+
+const Raspistill = require('node-raspistill').Raspistill;
+const c = new Raspistill({
+  width: 360,
+  height: 240
+});
 
 dotenv.config()
 
@@ -34,7 +40,29 @@ io = socket(server);
 let on = 0;
 
 io.on("connection", socket => {
-  let LEDPin = new Gpio(4, 'out'); //declare GPIO4 an output  
+
+
+  takePicture = (image) => {
+    //console.log('hello');
+    c.takePhoto().then((photo) => {
+	const image = new Buffer(photo).toString('base64');
+	//console.log(image);
+	if (images.length < 5) {
+          images.unshift('data:image/jpg;base64,'+ image);
+          times.unshift(getTimestamp());
+        } else {
+          images = images.shift();
+          images.unshift(image);
+          times = times.shift();
+          times.unshift(getTimestamp());
+        }
+        io.emit("IMAGES", images, times);
+    });
+  }
+
+
+  const Gpio = require('onoff').Gpio; //require onoff to control GPIO
+  //const LEDPin = new Gpio(4, 'out'); //declare GPIO4 an output   
 
   socket.emit("SOCKET", socket.id);
   socket.emit("ON_VALUE", on);
@@ -48,30 +76,28 @@ io.on("connection", socket => {
         // If on
         let UlPin = new Gpio(14, 'in');
         let currentIO = UlPin.readSync();
-        if (currentIO != previousIO) {
-          previousIO = currentIO
-        }
-        setTimeout(() => {
-          if (currentIO == 1) {
-            socket.emit("TAKE_PICTURE")
-          }
-        }, 1000)
+        //console.log(currentIO);
+	if (currentIO === 1) {
+          setTimeout(() => {
+              io.emit("PICTURE_TAKEN", "");
+              takePicture();
+          }, 1000)
+	}
       }
     }, 100)
   }
-  checkIO();
+  
+
+checkIO();
 
   // Toggle power
   socket.on("TOGGLE_ON", () => {
-    var Gpio = require('onoff').Gpio; //require onoff to control GPIO
-    var LEDPin = new Gpio(4, 'out'); //declare GPIO4 an output 
-    on = LEDPin.readSync();
     if (on === 0) {
-      LEDPin.writeSync(1);
+      //LEDPin.writeSync(1);
       on = 1;
     }
     else {
-      LEDPin.writeSync(0);
+      //LEDPin.writeSync(0);
       on = 0
     }
     // console.log(on);
@@ -79,24 +105,8 @@ io.on("connection", socket => {
   });
 
   // Set Images
-  socket.on("TAKE_PICTURE", () => {
-    c.start();
-    c.on("read", () => {
-        var image = new Buffer(fs.readFileSync("./photo.jpg")).toString("base64");
-        fn(image);
-        c.stop();
-        if (images.length < 10) {
-          images.unshift(image);
-          times.unshift(getTimestamp());
-        } else {
-          images = images.shift();
-          images.unshift(image);
-          times = times.shift();
-          times.unshift(getTimestamp());
-        }
-        io.emit("PICTURE_TAKEN", "");
-        io.emit("IMAGES", images, times);
-    });
+  socket.on("TAKE_PICTURE", (image) => {
+	takePicture(image);
   })
 
   socket.on("CLEAR_IMAGES", () => {
@@ -115,7 +125,7 @@ app.post('/notifications/subscribe', (req, res) => {
   });
 
   webpush.sendNotification(data.subscription, payload)
-    .then(result => console.log(result))
+    //.then(result => console.log(result))
     .catch(e => console.log(e.stack))
 
   res.status(200).json({'success': true})
