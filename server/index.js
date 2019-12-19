@@ -6,6 +6,7 @@ const dotenv = require('dotenv')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const webpush = require('web-push')
+const fs = require('fs');
 //const fs = require('fs')
 //const cam = require('raspicam');
 //var c = new cam({ mode: "photo", output: "photo.jpg", w: 1920, h: 1080 });
@@ -13,7 +14,8 @@ const webpush = require('web-push')
 const Raspistill = require('node-raspistill').Raspistill;
 const c = new Raspistill({
   width: 360,
-  height: 240
+  height: 240,
+  noFileSave: true,
 });
 
 dotenv.config()
@@ -46,6 +48,9 @@ io.on("connection", socket => {
     //console.log('hello');
     c.takePhoto().then((photo) => {
     const image = new Buffer(photo).toString('base64');
+    fs.writeFile('1.png', photo, function (err) {
+      if (err) { console.log(err) }
+    });
     //console.log(image);
     if (images.length < 5) {
         images.unshift('data:image/jpg;base64,'+ image);
