@@ -52,7 +52,7 @@ io.on("connection", socket => {
       if (err) { console.log(err) }
     });
     //console.log(image);
-    if (images.length < 5) {
+    if (images.length < 10) {
         images.unshift('data:image/jpg;base64,'+ image);
         times.unshift(getTimestamp());
       } else {
