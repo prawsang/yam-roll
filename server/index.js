@@ -45,19 +45,19 @@ io.on("connection", socket => {
   takePicture = (image) => {
     //console.log('hello');
     c.takePhoto().then((photo) => {
-	const image = new Buffer(photo).toString('base64');
-	//console.log(image);
-	if (images.length < 5) {
-          images.unshift('data:image/jpg;base64,'+ image);
-          times.unshift(getTimestamp());
-        } else {
-          images = images.shift();
-          images.unshift(image);
-          times = times.shift();
-          times.unshift(getTimestamp());
-        }
-        io.emit("IMAGES", images, times);
-    });
+    const image = new Buffer(photo).toString('base64');
+    //console.log(image);
+    if (images.length < 5) {
+        images.unshift('data:image/jpg;base64,'+ image);
+        times.unshift(getTimestamp());
+      } else {
+        images = images.shift();
+        images.unshift(image);
+        times = times.shift();
+        times.unshift(getTimestamp());
+      }
+      io.emit("IMAGES", images, times);
+    }).catch(e => console.log(e));
   }
 
 
@@ -69,8 +69,8 @@ io.on("connection", socket => {
   io.emit("IMAGES", images, times);
 
   // Check GPIO
+  let i = 0;
   checkIO = () => {
-    let i = 0;
     setInterval(() => {
       if (on === 1) {
         // If on
@@ -81,10 +81,11 @@ io.on("connection", socket => {
           if (i === 0) {
             io.emit("PICTURE_TAKEN", "");
             takePicture();
-            i++
           }
           if (i === 9) {
             i = 0;
+          } else {
+            i++
           }
       	} else {
           i = 0;
@@ -114,7 +115,7 @@ checkIO();
 
   // Set Images
   socket.on("TAKE_PICTURE", (image) => {
-	takePicture(image);
+	  takePicture(image);
   })
 
   socket.on("CLEAR_IMAGES", () => {
