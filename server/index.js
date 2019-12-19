@@ -70,19 +70,27 @@ io.on("connection", socket => {
 
   // Check GPIO
   checkIO = () => {
-    let previousIO = 0;
+    let i = 0;
     setInterval(() => {
       if (on === 1) {
         // If on
         let UlPin = new Gpio(14, 'in');
         let currentIO = UlPin.readSync();
         //console.log(currentIO);
-	if (currentIO === 1) {
-          setTimeout(() => {
-              io.emit("PICTURE_TAKEN", "");
-              takePicture();
-          }, 1000)
-	}
+	      if (currentIO === 1) {
+          if (i === 0) {
+            io.emit("PICTURE_TAKEN", "");
+            takePicture();
+            i++
+          }
+          if (i === 9) {
+            i = 0;
+          }
+      	} else {
+          i = 0;
+        }
+      } else {
+        i = 0;
       }
     }, 100)
   }
